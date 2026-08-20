@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:koda-player}",
+            "name": "Debug KodaPlayer",
+            "target": "KodaPlayer",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug KodaPlayer"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:koda-player}",
+            "name": "Release KodaPlayer",
+            "target": "KodaPlayer",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release KodaPlayer"
+        }
+    ]
+}
