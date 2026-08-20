@@ -35,8 +35,8 @@ struct Chapter: Equatable {
     /// number when it doesn't, always with the timestamp.
     var displayName: String {
         let time = TimeFormatter.string(from: start)
-        if let title, !title.isEmpty { return "\(title) — \(time)" }
-        return "Chapter \(index + 1) — \(time)"
+        if let title, !title.isEmpty { return "\(title) · \(time)" }
+        return "Chapter \(index + 1) · \(time)"
     }
 }
 
@@ -176,7 +176,7 @@ protocol MPVPlayerDelegate: AnyObject {
 ///
 /// mpv does all demuxing and decoding, which is what buys us "plays literally anything"
 /// without writing a single codec. Frames are handed to `MPVVideoView` through the
-/// libmpv render API (`vo=libmpv`) rather than mpv opening a window of its own —
+/// libmpv render API (`vo=libmpv`) rather than mpv opening a window of its own, because
 /// `--wid` embedding is not supported on macOS.
 final class MPVPlayer {
     enum EndReason {
@@ -200,7 +200,7 @@ final class MPVPlayer {
 
     init() {
         guard let handle = mpv_create() else {
-            fatalError("mpv_create() failed — libmpv could not be initialised")
+            fatalError("mpv_create() failed: libmpv could not be initialised")
         }
         self.handle = handle
 
@@ -272,7 +272,7 @@ final class MPVPlayer {
     func stop() {
         command(["stop"])
         // Volume, mute, the colour adjustments and the repeat mode belong to mpv rather
-        // than to the file, and stopping does not change them — so they survive the reset.
+        // than to the file, and stopping does not change them, so they survive the reset.
         var cleared = PlaybackState()
         cleared.volume = state.volume
         cleared.isMuted = state.isMuted
@@ -816,7 +816,8 @@ final class MPVPlayer {
         state.videoHeight = getInt("dheight") ?? state.videoHeight
     }
 
-    /// Reads the track list through indexed properties — much less code than decoding an mpv node tree.
+    /// Reads the track list through indexed properties, which is much less code than
+    /// decoding an mpv node tree.
     func refreshTracks() {
         guard let count = getInt("track-list/count"), count > 0 else {
             state.tracks = []

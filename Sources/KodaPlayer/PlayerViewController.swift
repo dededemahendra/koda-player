@@ -253,7 +253,7 @@ final class PlayerViewController: NSViewController {
     }
 
     /// ⌘L. mpv opens network sources exactly like local ones, so this only has to collect
-    /// the text — prefilled from the clipboard when that looks like a link.
+    /// the text, prefilled from the clipboard when that looks like a link.
     func openURLPanel() {
         let alert = NSAlert()
         alert.messageText = "Open URL"
@@ -911,7 +911,7 @@ final class PlayerViewController: NSViewController {
 
     static let minimumWindowWidth: Double = 480
     /// How far a pinch has to travel, past the point where the window can grow no further,
-    /// before it means "full screen" — high enough that ordinary resizing never trips it.
+    /// before it means "full screen". High enough that ordinary resizing never trips it.
     private static let fullScreenGestureThreshold: CGFloat = 0.25
 
     /// Pinch scales the window rather than the picture; the window's `contentAspectRatio`
@@ -1019,7 +1019,7 @@ final class PlayerViewController: NSViewController {
     }
 
     /// Diagnostic hook, mirroring `KODA_FRAME_DUMP`: set `KODA_STATE_DUMP=/path/state.json`
-    /// to write out what the player thinks it loaded — resolution, duration and tracks.
+    /// to write out what the player thinks it loaded: resolution, duration and tracks.
     private func dumpStateIfRequested() {
         let environment = ProcessInfo.processInfo.environment
         guard let path = environment["KODA_STATE_DUMP"] else { return }
@@ -1138,7 +1138,7 @@ extension PlayerViewController: MPVPlayerDelegate {
             guard !player.state.isLoopingFile else { return }
             playAdjacentItem(offset: 1)
         case .error(let message):
-            osd.show("Could not play file — \(message)", duration: 4)
+            osd.show("Could not play file: \(message)", duration: 4)
             placeholder.isHidden = false
         case .stopped:
             break

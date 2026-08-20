@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Builds Koda Player.app — a self-contained bundle with libmpv and its codecs inside,
+# Builds Koda Player.app, a self-contained bundle with libmpv and its codecs inside,
 # so it runs on Macs that have never seen Homebrew.
 set -euo pipefail
 
@@ -122,7 +122,7 @@ if command -v dylibbundler >/dev/null 2>&1; then
     [ -f "${dylib}" ] && dedupe_rpath "${dylib}"
   done
 else
-  echo "    dylibbundler missing — the app will need Homebrew's mpv installed to run."
+  echo "    dylibbundler missing: the app will need Homebrew's mpv installed to run."
   echo "    Install it with: brew install dylibbundler"
 fi
 

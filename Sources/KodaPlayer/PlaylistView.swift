@@ -213,7 +213,7 @@ extension PlaylistView: NSTableViewDataSource, NSTableViewDelegate {
         return true
     }
 
-    /// Drops land *above* a row, and the rows being moved are removed first — so every
+    /// Drops land *above* a row, and the rows being moved are removed first, so every
     /// dragged row that sat above the drop point shifts the insertion index down by one.
     /// Kept separate from the drag plumbing because this is the part that can be wrong.
     static func reordering(_ items: [URL], moving rows: [Int], to destination: Int) -> [URL] {

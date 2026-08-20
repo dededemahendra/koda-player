@@ -1,7 +1,7 @@
 import AppKit
 
-/// The ⌘I overlay: what mpv actually decided about the file — codec, bitrate, whether the
-/// decode is running on the GPU — refreshed on a timer while it is open.
+/// The ⌘I overlay: what mpv actually decided about the file. Codec, bitrate and whether
+/// the decode is running on the GPU, refreshed on a timer while the panel is open.
 ///
 /// Rows are rebuilt only when their content changes, so the once-a-second refresh doesn't
 /// churn the view hierarchy behind a panel that is mostly sitting still.

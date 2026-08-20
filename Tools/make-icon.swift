@@ -5,7 +5,7 @@ import AppKit
 // with iconutil.
 //
 // The icon is the app's pitch as a picture: a prism throwing a spectrum. Koda takes
-// anything — MKV, AVI, VOB, RMVB, whatever else FFmpeg can demux — and turns it into one
+// anything that FFmpeg can demux, from MKV and AVI to VOB and RMVB, and turns it into one
 // picture. A right-pointing play triangle happens to be the same shape as a prism, so the
 // button and the idea are one mark.
 
@@ -73,7 +73,7 @@ func drawRim(in rect: NSRect, canvas: CGFloat) {
 private enum Detail {
     /// 128pt and up: beam, refraction, seven bands.
     case full
-    /// 32 and 64pt: no beam — it is a pixel wide there — but still glass and colour.
+    /// 32 and 64pt: no beam, which is a pixel wide there, but still glass and colour.
     case medium
     /// 16pt: a lifted tile, a white mark, four blocks of colour.
     case plain
@@ -83,7 +83,7 @@ private enum Detail {
 
 /// Drawn straight into a bitmap of the exact pixel size. Going through `NSImage.lockFocus`
 /// renders at the display's backing scale instead, which silently produced every slot at
-/// double its declared size — and a 16pt icon downsampled from 32px is a blurry one.
+/// double its declared size, and a 16pt icon downsampled from 32px is a blurry one.
 func drawIcon(pixels: CGFloat) -> NSBitmapImageRep {
     let rep = NSBitmapImageRep(
         bitmapDataPlanes: nil, pixelsWide: Int(pixels), pixelsHigh: Int(pixels),

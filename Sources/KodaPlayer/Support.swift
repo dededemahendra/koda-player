@@ -62,7 +62,7 @@ enum ResumeStore {
         guard duration > 120 else { return }              // don't bother with short clips
         var positions = storage
         let identifier = url.absoluteString
-        // Near the start or the end means "watched" — drop the bookmark instead.
+        // Near the start or the end means "watched", so drop the bookmark instead.
         if position < 30 || position > duration - 30 {
             positions.removeValue(forKey: identifier)
         } else {
@@ -83,8 +83,8 @@ enum ResumeStore {
 ///
 /// Only the ones that describe *you* rather than the file are kept: how loud you like it,
 /// how your display is calibrated, whether the window floats. Anything that corrects a
-/// particular video — forced aspect, zoom, crop, sync offsets — is deliberately absent,
-/// because carrying those into the next file is a bug, not a convenience.
+/// particular video is deliberately absent, because carrying a forced aspect, a zoom, a
+/// crop or a sync offset into the next file is a bug rather than a convenience.
 enum Preferences {
     private static let defaults = UserDefaults.standard
 

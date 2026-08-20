@@ -136,7 +136,7 @@ final class NowPlayingController {
         activityAllowsDisplaySleep = true
     }
 
-    /// Whether the Mac is currently being held awake — used by the diagnostics dump.
+    /// Whether the Mac is currently being held awake. Used by the diagnostics dump.
     var isPreventingSleep: Bool { activity != nil }
 
     deinit {

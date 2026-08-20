@@ -269,7 +269,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         playerViewController.togglePlaylist()
     }
 
-    /// Keeps the checkmarks on the toggles honest — each one can also be flipped from the
+    /// Keeps the checkmarks on the toggles honest. Each one can also be flipped from the
     /// keyboard or the control bar, so the menu cannot own the state.
     func validateMenuItem(_ item: NSMenuItem) -> Bool {
         switch item.action {
@@ -288,7 +288,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 }
 
-/// Builds the menu bar in code — no nib, no Xcode project.
+/// Builds the menu bar in code, with no nib and no Xcode project.
 enum MainMenuBuilder {
     static func build(target: AppDelegate) -> NSMenu {
         let mainMenu = NSMenu()

@@ -1,9 +1,9 @@
 # Koda Player
 
-A lightweight macOS video player that plays every format — MKV, AVI, WMV, FLV, TS, MOV,
-MP4, WebM, RMVB, VOB, 3GP and the rest — because [mpv](https://mpv.io) / FFmpeg does the
-demuxing and decoding underneath. The app itself is a thin native AppKit shell: one window,
-an auto-hiding control bar, and nothing else in the way.
+A lightweight macOS video player that plays every format: MKV, AVI, WMV, FLV, TS, MOV,
+MP4, WebM, RMVB, VOB, 3GP and the rest. [mpv](https://mpv.io) and FFmpeg do the demuxing
+and decoding underneath. The app itself is a thin native AppKit shell: one window, an
+auto-hiding control bar, and nothing else in the way.
 
 ```
 ./build-app.sh          # builds dist/Koda Player.app  (~63 MB, self-contained)
@@ -20,28 +20,28 @@ open "dist/Koda Player.app"
   cannot be opened" dialogs.
 - **Hardware decoding** through VideoToolbox, with an automatic software fallback.
 - **Drag and drop** a video onto the window, or `⌘O`, or open it from Finder.
-- **Streams too** — `⌘L` takes a URL, prefilled from the clipboard when it holds a link.
-- **Subtitles** — embedded tracks, sidecar `.srt`/`.ass` files picked up automatically, or
+- **Streams too.** `⌘L` takes a URL, prefilled from the clipboard when it holds a link.
+- **Subtitles.** Embedded tracks, sidecar `.srt`/`.ass` files picked up automatically, or
   dragged in later.
 - **Multiple audio tracks** for dual-language files.
 - **Chapters**, listed in the menu bar and the gear menu, with keys to walk them.
 - **A-B loop** for repeating a passage, drawn as a band under the timeline.
 - **Audio and subtitle sync** in 0.1s steps when a file is out of step with itself.
-- **Picture controls** — force an aspect ratio, zoom, crop to fill the window, and adjust
+- **Picture controls.** Force an aspect ratio, zoom, crop to fill the window, and adjust
   brightness, contrast, saturation and gamma, from the `Video` menu or the gear button.
 - **Repeat** a file until you stop it, instead of rolling on to the next one.
-- **Media info** (`⌘I`) — codec, bitrate, frame rate, whether the decode is running on the
+- **Media info** (`⌘I`). Codec, bitrate, frame rate, whether the decode is running on the
   GPU, and how many frames have been dropped, updating while it plays.
-- **Remembers your settings** — volume, mute, the colour adjustments and float-on-top come
+- **Remembers your settings.** Volume, mute, the colour adjustments and float-on-top come
   back the way you left them.
 - **Keeps the Mac awake** while a video plays, and lets the screen sleep for audio-only
   files, where keeping it lit serves nobody.
-- **Now Playing** — appears in Control Center, and the play/pause keys on the keyboard or
-  a pair of headphones work.
-- **Window sizes** — `⌘1` / `⌘2` / `⌘3` for half, actual and double the video's own size,
+- **Now Playing.** It appears in Control Center, and the play/pause keys on the keyboard
+  or a pair of headphones work.
+- **Window sizes.** `⌘1` / `⌘2` / `⌘3` for half, actual and double the video's own size,
   or pinch the trackpad to scale the window to anything in between.
 - **Resumes where you left off** on files longer than two minutes.
-- **A queue you can see** (`P`) — the folder's videos listed in play order. Drag files or
+- **A queue you can see** (`P`). The folder's videos listed in play order. Drag files or
   folders in to add them, drag rows to reorder, `⌫` to remove, click to play. When a file
   ends, the next one in the queue starts.
 - Playback speed, volume up to 130%, screenshots to the Desktop.
@@ -69,17 +69,17 @@ it. Both delays reset to zero whenever a new file opens, so a correction made fo
 video never follows you into the next.
 
 Framing works the same way: a forced aspect ratio, a zoom and a crop are fixes for one
-video, so they are cleared with every new file. The colour adjustments are not — those
+video, so they are cleared with every new file. The colour adjustments are not. Those
 usually describe the display rather than the video, and they stay until you reset them.
 
 Opening a file from Finder or `⌘O` rebuilds the queue around it, because that is a new
-thing to watch. Playing a row of the queue does not — otherwise anything you had added
-would vanish the moment you used it. The queue lasts for the session and is not written
-to disk.
+thing to watch. Playing a row of the queue does not, because otherwise anything you had
+added would vanish the moment you used it. The queue lasts for the session and is not
+written to disk.
 
 The same line decides what survives quitting: volume, mute, the colour adjustments and
-float-on-top are remembered, while everything that corrects a particular file — sync
-offsets, forced aspect, zoom, crop — is not.
+float-on-top are remembered, while everything that corrects a particular file is not.
+That means sync offsets, forced aspect, zoom and crop.
 
 ## Trackpad
 
@@ -121,9 +121,9 @@ directly.
 | `AppDelegate.swift` | Menu bar and app lifecycle |
 | `Tools/make-icon.swift` | Draws the app icon: a prism throwing a spectrum |
 
-mpv renders through `MPV_RENDER_API_TYPE_OPENGL` rather than opening its own window —
-libmpv's `--wid` embedding is not supported on macOS. Frames are drawn on a dedicated
-queue so decoding never stalls the interface.
+mpv renders through `MPV_RENDER_API_TYPE_OPENGL` rather than opening its own window,
+because libmpv's `--wid` embedding is not supported on macOS. Frames are drawn on a
+dedicated queue so decoding never stalls the interface.
 
 ### Troubleshooting
 
@@ -137,11 +137,11 @@ KODA_STATE_DUMP=/tmp/state.json \
 ```
 
 `KODA_FRAME_DUMP` writes a rendered frame straight out of the GL back buffer (set
-`KODA_FRAME_DUMP_DELAY` in seconds — default 2 — to control when it samples), and
+`KODA_FRAME_DUMP_DELAY` in seconds, default 2, to control when it samples), and
 `KODA_STATE_DUMP` writes the resolution, duration, position, chapters, loop points, sync
-offsets, picture settings and track list the player detected. `KODA_STATE_DUMP_DELAY` (seconds, default 1.5)
-moves that sample later, which is how a chapter jump or a loop set from the keyboard can
-be inspected after the fact.
+offsets, picture settings and track list the player detected. `KODA_STATE_DUMP_DELAY`
+(seconds, default 1.5) moves that sample later, which is how a chapter jump or a loop set
+from the keyboard can be inspected after the fact.
 
 A stream that loads its duration but never shows a picture is usually the server rather
 than the player: mpv needs HTTP range requests to read an MP4 whose index sits at the end

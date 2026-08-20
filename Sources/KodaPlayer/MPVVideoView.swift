@@ -124,8 +124,8 @@ final class MPVVideoView: NSOpenGLView {
     // MARK: - Drawing
 
     /// Coalesces mpv's update notifications into one draw per frame.
-    /// `force` redraws the last frame even when mpv has nothing new — needed on resize,
-    /// where skipping the draw would leave a stretched or blank surface behind.
+    /// `force` redraws the last frame even when mpv has nothing new, which resize needs:
+    /// skipping the draw there would leave a stretched or blank surface behind.
     func requestRender(force: Bool = false) {
         renderQueue.async { [weak self] in
             self?.drawFrame(force: force)
@@ -138,7 +138,7 @@ final class MPVVideoView: NSOpenGLView {
 
         guard let context = openGLContext, let cglContext = context.cglContextObj else { return }
         guard let renderContext else {
-            // Nothing to draw yet (or already torn down) — paint the letterbox black.
+            // Nothing to draw yet (or already torn down), so paint the letterbox black.
             clear()
             return
         }
