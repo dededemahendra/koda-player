@@ -5,6 +5,18 @@ MP4, WebM, RMVB, VOB, 3GP and the rest. [mpv](https://mpv.io) and FFmpeg do the 
 and decoding underneath. The app itself is a thin native AppKit shell: one window, an
 auto-hiding control bar, and nothing else in the way.
 
+## Download
+
+[**Koda Player 1.0**](https://github.com/dededemahendra/koda-player/releases/latest) —
+Apple Silicon, macOS 13 or later.
+
+The app is not signed with an Apple Developer ID, so macOS refuses it on the first launch.
+Right-click it in Applications, choose Open, and click Open in the dialog; macOS remembers
+the choice. `xattr -dr com.apple.quarantine "/Applications/Koda Player.app"` clears it for
+good.
+
+## Build it yourself
+
 ```
 ./build-app.sh          # builds dist/Koda Player.app  (~63 MB, self-contained)
 open "dist/Koda Player.app"
@@ -120,6 +132,17 @@ KODA_SIGN_IDENTITY="Developer ID Application: Your Name (TEAMID)" \
 KODA_NOTARY_PROFILE=koda ./build-app.sh
 ```
 
+## Releasing
+
+`Tools/make-dmg.sh` packs whatever is in `dist/` into a disk image with the usual
+drag-to-Applications layout, and adds a note about the first-launch warning when the app
+is not signed with a Developer ID:
+
+```
+./build-app.sh && ./Tools/make-dmg.sh 1.0
+gh release create v1.0 dist/KodaPlayer-1.0.dmg --title "Koda Player 1.0"
+```
+
 `build-app.sh` copies libmpv and its codec libraries into the bundle, so the finished
 `.app` runs on Macs without Homebrew. Without `dylibbundler` the app still builds, but it
 will only run where Homebrew's mpv is installed.
@@ -146,6 +169,7 @@ directly.
 | `NowPlayingController.swift` | Control Center, media keys, and staying awake |
 | `AppDelegate.swift` | Menu bar and app lifecycle |
 | `Tools/make-icon.swift` | Draws the app icon: a prism throwing a spectrum |
+| `Tools/make-dmg.sh` | Packs the built app into a DMG for release |
 
 mpv renders through `MPV_RENDER_API_TYPE_OPENGL` rather than opening its own window,
 because libmpv's `--wid` embedding is not supported on macOS. Frames are drawn on a
