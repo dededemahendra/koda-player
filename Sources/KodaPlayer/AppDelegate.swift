@@ -18,9 +18,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         windowController.playerViewController
     }
 
-    /// Exposed so the launch path can be exercised outside the app bundle.
-    var playerForTesting: MPVPlayer { playerViewController.player }
-
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.mainMenu = MainMenuBuilder.build(target: self)
         windowController.showWindow(nil)
