@@ -1,23 +1,30 @@
 import AppKit
 
 final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
-    private var windowController: PlayerWindowController!
+    /// Built on first use rather than in `applicationDidFinishLaunching`. Opening a file
+    /// from Finder delivers `application(_:open:)` *before* that callback runs, so a
+    /// window controller created there does not exist yet when the file arrives, and
+    /// every double-click ended in a nil unwrap.
+    private lazy var windowController: PlayerWindowController = {
+        let controller = PlayerWindowController()
+        controller.playerViewController.applySavedPreferences()
+        if Preferences.floatOnTop {
+            controller.window?.level = .floating
+        }
+        return controller
+    }()
 
     private var playerViewController: PlayerViewController {
         windowController.playerViewController
     }
 
+    /// Exposed so the launch path can be exercised outside the app bundle.
+    var playerForTesting: MPVPlayer { playerViewController.player }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.mainMenu = MainMenuBuilder.build(target: self)
-
-        windowController = PlayerWindowController()
         windowController.showWindow(nil)
         NSApp.activate(ignoringOtherApps: true)
-
-        playerViewController.applySavedPreferences()
-        if Preferences.floatOnTop {
-            windowController.window?.level = .floating
-        }
 
         if let url = urlFromLaunchArguments() {
             playerViewController.open(url: url)
