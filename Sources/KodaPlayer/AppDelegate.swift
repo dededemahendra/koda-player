@@ -420,7 +420,9 @@ enum MainMenuBuilder {
         container("Audio", [
             item("Volume Up", #selector(AppDelegate.increaseVolume(_:)), String(UnicodeScalar(NSUpArrowFunctionKey)!), target: target),
             item("Volume Down", #selector(AppDelegate.decreaseVolume(_:)), String(UnicodeScalar(NSDownArrowFunctionKey)!), target: target),
-            item("Mute", #selector(AppDelegate.toggleMute(_:)), "m", target: target),
+            // ⌘M belongs to Minimize on every Mac; a second claim on it simply wins in the
+            // menu bar and leaves Minimize with a shortcut that never fires.
+            item("Mute", #selector(AppDelegate.toggleMute(_:)), "m", modifiers: [.command, .shift], target: target),
             .separator(),
             item("Audio Delay −0.1s", #selector(AppDelegate.decreaseAudioDelay(_:)), target: target),
             item("Audio Delay +0.1s", #selector(AppDelegate.increaseAudioDelay(_:)), target: target),

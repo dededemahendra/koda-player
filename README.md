@@ -99,6 +99,27 @@ Building needs Homebrew's mpv:
 brew install mpv dylibbundler
 ```
 
+## Signing
+
+The build ad-hoc signs by default, which is enough to run the app on the Mac that built
+it. macOS treats an ad-hoc signed app as untrusted, so Gatekeeper questions both the app
+and the files it is asked to open on any other Mac.
+
+With an Apple Developer account, set an identity and the build signs properly, with the
+hardened runtime and the entitlements in `Tools/KodaPlayer.entitlements`:
+
+```
+KODA_SIGN_IDENTITY="Developer ID Application: Your Name (TEAMID)" ./build-app.sh
+```
+
+Add a notarytool keychain profile and it notarises and staples too:
+
+```
+xcrun notarytool store-credentials koda --apple-id you@example.com --team-id TEAMID
+KODA_SIGN_IDENTITY="Developer ID Application: Your Name (TEAMID)" \
+KODA_NOTARY_PROFILE=koda ./build-app.sh
+```
+
 `build-app.sh` copies libmpv and its codec libraries into the bundle, so the finished
 `.app` runs on Macs without Homebrew. Without `dylibbundler` the app still builds, but it
 will only run where Homebrew's mpv is installed.
@@ -113,7 +134,12 @@ directly.
 | `Sources/CMPV/module.modulemap` | Exposes libmpv's C API to Swift |
 | `MPVPlayer.swift` | libmpv wrapper: commands, property observation, event loop |
 | `MPVVideoView.swift` | mpv's render API drawing into an OpenGL surface |
-| `PlayerViewController.swift` | Window contents, input, drag and drop, track menus |
+| `PlayerViewController.swift` | Window contents: layout, opening media, the panels |
+| `PlayerViewController+Input.swift` | Keyboard and mouse |
+| `PlayerViewController+Menus.swift` | The control bar's menus, chapters, picture |
+| `PlayerViewController+Window.swift` | Sizing, full screen, pinch, diagnostics |
+| `PlayerContainerView.swift` | The root view: input routing, drag and drop, gestures |
+| `PlayerOverlays.swift` | The placeholder and the OSD |
 | `ControlsView.swift` | The floating control bar |
 | `InfoPanelView.swift` | The `⌘I` media info overlay |
 | `PlaylistView.swift` | The queue panel: rows, reordering, drops |

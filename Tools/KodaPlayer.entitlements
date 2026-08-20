@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Only used when signing with a Developer ID, where the hardened runtime applies. -->
+
+	<!-- mpv links LuaJIT, which allocates executable memory. -->
+	<key>com.apple.security.cs.allow-jit</key>
+	<true/>
+
+	<!-- The bundle carries libmpv and ~50 FFmpeg and codec dylibs copied out of Homebrew.
+	     build-app.sh re-signs each one with the same identity, so this is a safety net for
+	     any library that arrives already signed by someone else. -->
+	<key>com.apple.security.cs.disable-library-validation</key>
+	<true/>
+</dict>
+</plist>

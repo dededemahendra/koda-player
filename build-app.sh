@@ -11,6 +11,7 @@ VERSION="1.0"
 BUILD_DIR=".build/release"
 APP_DIR="dist/${APP_NAME}.app"
 CONTENTS="${APP_DIR}/Contents"
+ENTITLEMENTS="Tools/KodaPlayer.entitlements"
 
 BREW_PREFIX="$(brew --prefix)"
 if [ ! -f "${BREW_PREFIX}/lib/libmpv.dylib" ]; then
@@ -126,9 +127,41 @@ else
   echo "    Install it with: brew install dylibbundler"
 fi
 
-echo "==> Signing (ad-hoc)"
-codesign --force --deep --sign - "${APP_DIR}" 2>/dev/null || \
-  echo "    ad-hoc signing failed; the app still runs locally."
+# A Developer ID signature is what stops macOS treating the app, and the files it is
+# asked to open, as untrusted. Without one the build still works and still runs on this
+# Mac, it just cannot be handed to anyone else without Gatekeeper complaining.
+if [ -n "${KODA_SIGN_IDENTITY:-}" ]; then
+  echo "==> Signing as ${KODA_SIGN_IDENTITY}"
+  # Frameworks first: a bundle has to be signed inside out, and --deep cannot be used for
+  # a distributable signature.
+  for dylib in "${CONTENTS}/Frameworks"/*.dylib; do
+    [ -f "${dylib}" ] || continue
+    codesign --force --timestamp --options runtime --sign "${KODA_SIGN_IDENTITY}" "${dylib}"
+  done
+  if [ -f "${ENTITLEMENTS}" ]; then
+    codesign --force --timestamp --options runtime \
+      --entitlements "${ENTITLEMENTS}" --sign "${KODA_SIGN_IDENTITY}" "${APP_DIR}"
+  else
+    codesign --force --timestamp --options runtime --sign "${KODA_SIGN_IDENTITY}" "${APP_DIR}"
+  fi
+  codesign --verify --strict --verbose=2 "${APP_DIR}" 2>&1 | sed 's/^/    /'
+
+  if [ -n "${KODA_NOTARY_PROFILE:-}" ]; then
+    echo "==> Notarising with keychain profile ${KODA_NOTARY_PROFILE}"
+    ZIP="$(mktemp -d)/${APP_NAME}.zip"
+    ditto -c -k --keepParent "${APP_DIR}" "${ZIP}"
+    xcrun notarytool submit "${ZIP}" --keychain-profile "${KODA_NOTARY_PROFILE}" --wait
+    xcrun stapler staple "${APP_DIR}"
+    echo "    stapled; the app now opens anywhere without a Gatekeeper prompt."
+  else
+    echo "    Set KODA_NOTARY_PROFILE to notarise as well (see the README)."
+  fi
+else
+  echo "==> Signing (ad-hoc)"
+  codesign --force --deep --sign - "${APP_DIR}" 2>/dev/null || \
+    echo "    ad-hoc signing failed; the app still runs locally."
+  echo "    Set KODA_SIGN_IDENTITY to sign with a Developer ID instead."
+fi
 
 SIZE="$(du -sh "${APP_DIR}" | cut -f1)"
 echo
